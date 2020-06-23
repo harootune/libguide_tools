@@ -27,7 +27,7 @@ class CSVOutput:
         """
         filename = f'invalid_alt_text_crawl_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
 
-        self.file = open(filename, mode='w', newline='')
+        self.file = open(filename, mode='w', newline='', encoding='utf-8')
         self.writer = csv.writer(self.file, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
         self.writer.writerow(['origin', 'page_title', 'src'])
 
