@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Scrapy settings for alt_text_validator project
+# Scrapy settings for uiuc_library project
 #
 # For simplicity, this file contains only settings considered important or
 # commonly used. You can find more settings consulting the documentation:
@@ -9,14 +9,14 @@
 #     https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #     https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 
-BOT_NAME = 'alt_text_validator'
+BOT_NAME = 'uiuc_library'
 
-SPIDER_MODULES = ['alt_text_validator.spiders']
-NEWSPIDER_MODULE = 'alt_text_validator.spiders'
+SPIDER_MODULES = ['accessibility_spiders.uiuc_library.spiders']
+NEWSPIDER_MODULE = 'accessibility_spiders.uiuc_library.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'alt_text_validator'
+USER_AGENT = 'uiuc_library'
 
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
@@ -47,13 +47,13 @@ ROBOTSTXT_OBEY = True
 # Enable or disable spider middlewares
 # See https://docs.scrapy.org/en/latest/topics/spider-middleware.html
 #SPIDER_MIDDLEWARES = {
-#    'alt_text_validator.middlewares.AltTextValidatorSpiderMiddleware': 543,
+#    'uiuc_library.middlewares.AltTextValidatorSpiderMiddleware': 543,
 #}
 
 # Enable or disable downloader middlewares
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
-#    'alt_text_validator.middlewares.AltTextValidatorDownloaderMiddleware': 543,
+#    'uiuc_library.middlewares.AltTextValidatorDownloaderMiddleware': 543,
 #}
 
 # Enable or disable extensions
@@ -65,7 +65,7 @@ ROBOTSTXT_OBEY = True
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 #ITEM_PIPELINES = {
-#    'alt_text_validator.pipelines.AltTextValidatorPipeline': 300,
+#    'uiuc_library.pipelines.AltTextValidatorPipeline': 300,
 #}
 
 # Enable and configure the AutoThrottle extension (disabled by default)
