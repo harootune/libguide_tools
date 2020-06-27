@@ -11,8 +11,8 @@
 
 BOT_NAME = 'uiuc_library'
 
-SPIDER_MODULES = ['accessibility_spiders.uiuc_library.spiders']
-NEWSPIDER_MODULE = 'accessibility_spiders.uiuc_library.spiders'
+SPIDER_MODULES = ['libguide_spiders.uiuc_library.spiders']
+NEWSPIDER_MODULE = 'libguide_spiders.uiuc_library.spiders'
 
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent

@@ -1,42 +1,26 @@
 # local
-from accessibility_spiders.spider_interface.interfaces import AccessibilitySpiderInterface
+from libguide_spiders.spider_interface.interfaces import LibguideSpiderInterface
 
 
 def main():
     extractor_config = {
-        'restrict_xpaths': ('//*[@id="bs-navbar-header"]',),
-        'allow_domains': 'library.illinois.edu',
+        'restrict_css': ('#s-lg-guide-tabs',),
+        'allow_domains': 'guides.library.illinois.edu',
         'deny': '.*#.*'
     }
 
-    # parse_config = {
-    #     'css': '#content',
-    # }
+    parse_config = {
+        'css': '#s-lg-guide-main',
+    }
 
     # Instantiate the interface
-    interface = AccessibilitySpiderInterface('atv-spider',
-                                             csv=True,
-                                             csv_path='custom_log_2.csv',
-                                             extractor_config=extractor_config,
-                                             list_output=False)
-                                             # parse_config=parse_config)
+    interface = LibguideSpiderInterface('bl-spider',
+                                        csv_path='custom_log.csv',
+                                        extractor_config=extractor_config,
+                                        parse_config=parse_config)
 
     # start a crawl
-    interface.start_crawl(['https://www.library.illinois.edu/',
-                           'https://www.library.illinois.edu/ihx/',
-                           'https://www.library.illinois.edu/funkaces/',
-                           'https://www.library.illinois.edu/arx/',
-                           'https://www.library.illinois.edu/chx/',
-                           'https://www.library.illinois.edu/mainstacks/'])
-
-    # retrieve output
-    print(interface.get_output())
-
-    # clear output up till now
-    interface.clear_output()
-
-    # demonstrate output is clear
-    interface.get_output()
+    interface.start_crawl(['https://guides.library.illinois.edu/arabspringworkshop'])
 
 
 if __name__ == '__main__':
