@@ -31,16 +31,17 @@ class CSVOutput:
         :param spider: the current ATVspider instance
         :return: None
         """
-        if spider.csv_path:
-            filename = spider.csv_path
-        else:
-            filename = f'invalid_alt_text_crawl_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
-        filepath = Path(filename)
+        if spider.csv:
+            if spider.csv_path:
+                filename = spider.csv_path
+            else:
+                filename = f'invalid_alt_text_crawl_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
+            filepath = Path(filename)
 
-        self.__file = open(filepath, mode='wb')
-        self.__exporter = CsvItemExporter(self.__file, include_headers_line=True,
-                                          delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        self.__exporter.start_exporting()
+            self.__file = open(filepath, mode='wb')
+            self.__exporter = CsvItemExporter(self.__file, include_headers_line=True,
+                                              delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
+            self.__exporter.start_exporting()
 
     def process_item(self, item: Item, spider: AccessibilitySpider) -> Item:
         """
@@ -50,7 +51,8 @@ class CSVOutput:
         :param spider: the current ATVSpider
         :return: an InvalidAltTextImage item item to be passed further down the pipeline
         """
-        self.__exporter.export_item(item)
+        if spider.csv:
+            self.__exporter.export_item(item)
         return item
 
     def close_spider(self, spider: AccessibilitySpider) -> None:
@@ -60,15 +62,21 @@ class CSVOutput:
         :param spider: the current ATVSpider instance
         :return: None
         """
-        self.__exporter.finish_exporting()
-        self.__file.close()
+        if spider.csv:
+            self.__exporter.finish_exporting()
+            self.__file.close()
+
+
+class DBOutput:
+    def process_item(self, item: Item, spider: AccessibilitySpider) -> Item:
+        return item
 
 
 class ListOutput:
     """Appends results to the spider's output attribute"""
     def process_item(self, item: Item, spider: AccessibilitySpider) -> Item:
-        if spider.output is not None:
-            spider.output.append(item)
+        if spider.list_output:
+            spider.output_target.append(item)
 
         return item
 
