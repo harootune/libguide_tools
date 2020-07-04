@@ -16,19 +16,17 @@ class SVSpider(LibGuideSpider):
     """Extracts and stores vufind and sfx links from libguides. See README.md"""
     # Class variables
     name = 'sv-spider'
-    rules = (
-        Rule(LinkExtractor(restrict_xpaths=('//*[@id="s-lg-guide-tabs"]',),
-                           allow='\S*guides.library.illinois.edu\S*', deny='.*#.*'),
+    rules = [
+        Rule(LinkExtractor(restrict_css=('#s-lg-guide-tabs',), allow='\S*guides.library.illinois.edu\S*', deny='.*#.*'),
                            callback='parse_sv_links', follow=True),
-    )
+    ]
 
-    def __init__(self, start_urls: Union[List[str], str] = '', csv_path: str = '',
-                 extractor_config: dict = None, parse_config: dict = None, *args, **kwargs):
-        super().__init__(start_urls, csv_path, parse_config, *args, **kwargs)
+    def __init__(self, start_urls: Union[List[str], str] = '', css: str = '', csv_path: str = '', *args, **kwargs):
+        super().__init__(start_urls, csv_path, *args, **kwargs)
 
-        # create rules
-        SVSpider.construct_follow_rule('parse_sv_links', extractor_config)
-        self._compile_rules()
+        # attributes #
+        # public
+        self.css = css
 
     def parse_sv_links(self, response: Response) -> FoundLink:
         """
@@ -40,13 +38,8 @@ class SVSpider(LibGuideSpider):
         """
         title = response.css('title::text').get()
 
-        if self.parse_config:
-            if 'css' in self.parse_config:
-                links = response.css(self.parse_config['css'])
-            elif 'xpath' in self.parse_config:
-                links = response.xpath(self.parse_config['xpath'])
-            else:
-                links = response
+        if self.css:
+            links = response.css(self.parse_config['css'])
         else:
             links = response
 

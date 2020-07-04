@@ -21,8 +21,8 @@ from libguide_spiders.uiuc_library.spiders.base_libguide_spider import LibGuideS
 class CSVOutput:
     """Handles csv writing throughout the spider's lifetime"""
     def __init__(self):
-        self.__file = None
-        self.__exporter = None
+        self.file = None
+        self.exporter = None
 
     def open_spider(self, spider: LibGuideSpider) -> None:
         """
@@ -37,10 +37,10 @@ class CSVOutput:
             filename = f'{spider.name}_{datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S")}.csv'
         filepath = Path(filename)
 
-        self.__file = open(filepath, mode='wb')
-        self.__exporter = CsvItemExporter(self.__file, include_headers_line=True,
+        self.file = open(filepath, mode='wb')
+        self.exporter = CsvItemExporter(self.file, include_headers_line=True,
                                           delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
-        self.__exporter.start_exporting()
+        self.exporter.start_exporting()
 
     def process_item(self, item: Item, spider: LibGuideSpider) -> Item:
         """
@@ -50,7 +50,7 @@ class CSVOutput:
         :param spider: the current ATVSpider
         :return: an InvalidAltTextImage item item to be passed further down the pipeline
         """
-        self.__exporter.export_item(item)
+        self.exporter.export_item(item)
         return item
 
     def close_spider(self, spider: LibGuideSpider) -> None:
@@ -60,7 +60,7 @@ class CSVOutput:
         :param spider: the current ATVSpider instance
         :return: None
         """
-        self.__exporter.finish_exporting()
-        self.__file.close()
+        self.exporter.finish_exporting()
+        self.file.close()
 
 

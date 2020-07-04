@@ -21,16 +21,19 @@ class BLSpider(LibGuideSpider):
     name = 'bl-spider'
     custom_settings = LibGuideSpider.custom_settings.copy()
     custom_settings['HTTPERROR_ALLOW_ALL'] = True
+    rules = [
+        Rule(LinkExtractor(restrict_css=('#s-lg-guide-tabs',), allow='\S*guides.library.illinois.edu\S*', deny='.*#.*'),
+             follow=True),
 
-    def __init__(self, start_urls: Union[List[str], str] = '', csv_path: str = '',
-                 extractor_config: dict = None, parse_config: dict = None, *args, **kwargs):
-        super().__init__(start_urls, csv_path, parse_config, *args, **kwargs)
+        Rule(LinkExtractor(restrict_css=('#s-lg-guide-main',)),
+             process_request='request_associator',
+             callback='parse_broken_link',
+             errback='errback_broken_link',
+             follow=False)
+    ]
 
-        # create rules
-        BLSpider.construct_follow_rule('', extractor_config)
-        BLSpider.construct_broken_link_rule('request_associator', 'parse_broken_link', 'errback_broken_link',
-                                            self.parse_config)
-        self._compile_rules()
+    def __init__(self, start_urls: Union[List[str], str] = '', csv_path: str = '', *args, **kwargs):
+        super().__init__(start_urls, csv_path,  *args, **kwargs)
 
     def parse_broken_link(self, response: Response) -> FoundLink:
         """
@@ -90,33 +93,3 @@ class BLSpider(LibGuideSpider):
         request.meta['origin_title'] = title
 
         return request
-
-    @classmethod
-    def construct_broken_link_rule(cls, process_request: str, callback: str, errback: str, parse_config: dict) -> None:
-        print('GOT TO BROKEN LINK CONSTRUCTOR')
-        if parse_config:
-            if 'css' in parse_config:
-                bl_extractor = LinkExtractor(restrict_css=(parse_config['css'],))
-            elif 'xpath' in parse_config:
-                bl_extractor = LinkExtractor(restrict_xpaths=(parse_config['xpath'],))
-            else:
-                bl_extractor = LinkExtractor()
-        else:
-            bl_extractor = LinkExtractor()
-
-        print(f'PROCESS REQUEST: {process_request}')
-        print(f'CALLBACK: {callback}')
-        print(f'ERRBACK: {errback}')
-        bl_rule = Rule(bl_extractor, process_request=process_request, callback=callback, errback=errback, follow=False)
-
-        if cls.rules:
-            cls.rules += (bl_rule,)
-        else:
-            cls.rules = (bl_rule,)
-
-
-        # Rule(LinkExtractor(restrict_xpaths=('//*[@id="s-lg-guide-main"]',)),
-        #                    process_request='request_associator',
-        #                    callback='parse_broken_link',
-        #                    errback='errback_broken_link',
-        #                    follow=False)
