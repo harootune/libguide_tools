@@ -1,5 +1,4 @@
 # stdlib
-import urllib.parse as parse
 from typing import List, Union
 
 # third party
@@ -10,6 +9,7 @@ from scrapy.http.response import Response
 # local
 from libguide_spiders.uiuc_library.spiders.base_libguide_spider import LibGuideSpider
 from libguide_spiders.uiuc_library.items import FoundLink
+from libguide_spiders.uiuc_library.utils import assemble_absolute_link
 
 
 class SVSpider(LibGuideSpider):
@@ -21,8 +21,10 @@ class SVSpider(LibGuideSpider):
                            callback='parse_sv_links', follow=True),
     ]
 
-    def __init__(self, start_urls: Union[List[str], str] = '', css: str = '', csv_path: str = '', *args, **kwargs):
-        super().__init__(start_urls, csv_path, *args, **kwargs)
+    def __init__(self, start_urls: Union[List[str], str] = '', css: str = '', csv_path: str = '', from_file: str = '',
+                 *args, **kwargs):
+        # parent constructor #
+        super().__init__(start_urls, csv_path, from_file, *args, **kwargs)
 
         # attributes #
         # public
@@ -39,7 +41,7 @@ class SVSpider(LibGuideSpider):
         title = response.css('title::text').get()
 
         if self.css:
-            links = response.css(self.parse_config['css'])
+            links = response.css(self.css)
         else:
             links = response
 
@@ -50,7 +52,7 @@ class SVSpider(LibGuideSpider):
                 link_obj = FoundLink()
                 link_obj['a_origin'] = response.url
                 link_obj['b_title'] = title
-                link_obj['c_url'] = self.assemble_absolute_link(response.url, link.attrib['href'])
+                link_obj['c_url'] = assemble_absolute_link(response.url, link.attrib['href'])
                 link_obj['d_text'] = link.xpath('./text()').get()
                 yield link_obj
 
@@ -62,17 +64,4 @@ class SVSpider(LibGuideSpider):
         :yield: a FoundLink representing a
         """
         yield from self.parse_sv_links(response)
-
-    def assemble_absolute_link(self, origin: str, path: str) -> str:
-        """
-        Checks if a link is absolute
-        :param origin: the address of the page where an image src was linked from
-        :param path: an image src
-        :return: an absolute version of the link, if it is not already absolute
-        """
-        src_parts = parse.urlparse(path)
-        if not src_parts.netloc:
-            return parse.urljoin(origin, path)
-        else:
-            return path
 

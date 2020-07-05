@@ -21,6 +21,9 @@ USER_AGENT = 'uiuc_library'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = True
 
+# Timeout
+DOWNLOAD_TIMEOUT = 15
+
 # Configure maximum concurrent requests performed by Scrapy (default: 16)
 #CONCURRENT_REQUESTS = 32
 

@@ -2,8 +2,10 @@
 from typing import List, Union
 
 # third party
-from scrapy.spiders import CrawlSpider, Rule
-from scrapy.linkextractors import LinkExtractor
+from scrapy.spiders import CrawlSpider
+
+# local
+from libguide_spiders.uiuc_library.utils import links_from_libguide_csv
 
 
 class LibGuideSpider(CrawlSpider):
@@ -15,15 +17,17 @@ class LibGuideSpider(CrawlSpider):
                         },
     }
 
-    def __init__(self, start_urls: Union[List[str], str], csv_path: str, *args, **kwargs):
+    def __init__(self, start_urls: Union[List[str], str], csv_path: str, from_file: str, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
         # get our start urls
-        try:
-            self.start_urls = start_urls.split(',')
-        except AttributeError:
-            self.start_urls = start_urls
-        print(self.start_urls)
+        if from_file:
+            self.start_urls = links_from_libguide_csv(from_file)
+        else:
+            try:
+                self.start_urls = start_urls.split(',')
+            except AttributeError:
+                self.start_urls = start_urls
 
         # Pipeline-related attributes
         self.csv_path = csv_path

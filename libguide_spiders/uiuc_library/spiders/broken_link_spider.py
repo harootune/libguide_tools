@@ -32,8 +32,10 @@ class BLSpider(LibGuideSpider):
              follow=False)
     ]
 
-    def __init__(self, start_urls: Union[List[str], str] = '', csv_path: str = '', *args, **kwargs):
-        super().__init__(start_urls, csv_path,  *args, **kwargs)
+    def __init__(self, start_urls: Union[List[str], str] = '', csv_path: str = '', from_file: str = '',
+                 *args, **kwargs):
+        # parent constructor #
+        super().__init__(start_urls, csv_path, from_file, *args, **kwargs)
 
     def parse_broken_link(self, response: Response) -> FoundLink:
         """
